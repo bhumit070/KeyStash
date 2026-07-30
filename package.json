@@ -1,0 +1,31 @@
+{
+  "name": "keystash",
+  "version": "0.1.0",
+  "description": "A Chrome extension to stash and quickly access your on-demand key/value data (GitHub profile, LinkedIn URL, and more).",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.0.0-beta.28",
+    "@tailwindcss/vite": "^4.1.11",
+    "@types/chrome": "^0.0.270",
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "sharp": "^0.32.6",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.3"
+  }
+}
