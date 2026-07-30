@@ -1,5 +1,7 @@
 # KeyStash
 
+![KeyStash Marquee](images/keystash-marquee.png)
+
 > Stash and instantly access your on-demand key/value data — GitHub profile, LinkedIn URL, wallet address, license keys, and anything else you keep re-typing.
 
 KeyStash is an open-source Chrome extension (Manifest V3) that stores small pieces of information as named key/value pairs and lets you copy or paste them anywhere in a couple of keystrokes. Your data is stored in `chrome.storage.sync`, so it follows you across every Chrome you're signed into.
@@ -9,10 +11,19 @@ KeyStash is an open-source Chrome extension (Manifest V3) that stores small piec
 
 ## Features
 
+<p align="center">
+  <img src="images/keystash-screenshot-popup.png" alt="KeyStash Popup Manager" width="400">
+</p>
+
 - **Popup manager** — a searchable list of all your stored keys with one-click copy.
 - **Typed values with validation** — pick a type (Text, Number, URL, Email, UUID, Date, Time, Date & Time, or Other) and KeyStash validates the value with [Zod](https://zod.dev) before saving. "Other" is free-form.
 - **Pinning** — pin the keys you use most so they float to the top.
 - **Context menu** — optionally expose pinned keys in the right-click menu on any page to copy them instantly.
+
+<p align="center">
+  <img src="images/keystash-screenshot-spotlight.png" alt="KeyStash Spotlight Search" width="600">
+</p>
+
 - **Spotlight search** — press <kbd>Ctrl/Cmd</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to open a macOS-Spotlight-style overlay on the current page. Search, hit <kbd>Enter</kbd>, and the value is copied to your clipboard **and pasted into whatever input you were focused on**.
 - **CSV export** — download a backup of everything from the settings page.
 - **Cross-device sync** — data lives in `chrome.storage.sync` and syncs to your signed-in Chrome browsers automatically.
