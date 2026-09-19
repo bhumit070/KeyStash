@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import type { KeyItem } from '@/lib/types';
+import type { KeyItem, ValueType } from '@/lib/types';
+import { VALUE_TYPE_ORDER, VALUE_TYPE_LABELS } from '@/lib/types';
 import { useItems } from '@/lib/useItems';
 import { useToast } from '@/components/Toast';
 import { PlusIcon, SearchIcon, SettingsIcon } from '@/components/icons';
@@ -10,17 +11,22 @@ export function App() {
   const { items, loading } = useItems();
   const toast = useToast();
   const [query, setQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState<ValueType | 'all'>('all');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<KeyItem | null>(null);
 
   const filtered = useMemo(() => {
+    let result = items;
+    if (typeFilter !== 'all') {
+      result = result.filter((it) => it.type === typeFilter);
+    }
     const q = query.trim().toLowerCase();
-    if (!q) return items;
-    return items.filter(
+    if (!q) return result;
+    return result.filter(
       (it) =>
         it.name.toLowerCase().includes(q) || it.value.toLowerCase().includes(q),
     );
-  }, [items, query]);
+  }, [items, query, typeFilter]);
 
   const openAdd = () => {
     setEditing(null);
@@ -58,6 +64,20 @@ export function App() {
             placeholder="Search keys..."
             className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
           />
+        </div>
+        <div className="mt-2.5">
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value as ValueType | 'all')}
+            className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-sm text-slate-700 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:focus:border-brand-500"
+          >
+            <option value="all">All Types</option>
+            {VALUE_TYPE_ORDER.map((type) => (
+              <option key={type} value={type}>
+                {VALUE_TYPE_LABELS[type]}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
