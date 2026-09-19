@@ -1,6 +1,6 @@
 {
   "name": "keystash",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Chrome extension to stash and quickly access your on-demand key/value data (GitHub profile, LinkedIn URL, and more).",
   "type": "module",
   "license": "MIT",
