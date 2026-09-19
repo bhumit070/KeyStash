@@ -61,8 +61,13 @@ export interface NewItemInput {
 }
 
 export async function addItem(input: NewItemInput): Promise<KeyItem> {
+  const [item] = await addItems([input]);
+  return item;
+}
+
+export async function addItems(inputs: NewItemInput[]): Promise<KeyItem[]> {
   const now = Date.now();
-  const item: KeyItem = {
+  const newItems = inputs.map((input) => ({
     id: newId(),
     name: input.name.trim(),
     value: input.value,
@@ -71,10 +76,19 @@ export async function addItem(input: NewItemInput): Promise<KeyItem> {
     inContextMenu: input.inContextMenu ?? false,
     createdAt: now,
     updatedAt: now,
-  };
+  }));
+
   const ids = await getIndex();
-  await area.set({ [itemKey(item.id)]: item, [INDEX_KEY]: [item.id, ...ids] });
-  return item;
+  const updates: Record<string, any> = {
+    [INDEX_KEY]: [...newItems.map((it) => it.id), ...ids],
+  };
+  
+  for (const item of newItems) {
+    updates[itemKey(item.id)] = item;
+  }
+  
+  await area.set(updates);
+  return newItems;
 }
 
 export async function updateItem(

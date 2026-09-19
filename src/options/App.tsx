@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
-import type { Settings, StorageUsage } from '@/lib/types';
+import { useEffect, useState, useRef } from 'react';
+import type { Settings, StorageUsage, ValueType } from '@/lib/types';
+import { VALUE_TYPE_ORDER } from '@/lib/types';
 import { useItems } from '@/lib/useItems';
-import { getSettings, getUsage, updateSettings } from '@/lib/storage';
-import { downloadCsv } from '@/lib/csv';
+import { getSettings, getUsage, updateSettings, addItems } from '@/lib/storage';
+import { downloadCsv, parseCsv } from '@/lib/csv';
 import { sendMessage } from '@/lib/messages';
 import { useToast } from '@/components/Toast';
 import { PinIcon } from '@/components/icons';
@@ -30,6 +31,8 @@ export function App() {
     await sendMessage({ type: 'REBUILD_CONTEXT_MENU' });
   };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleExport = () => {
     if (items.length === 0) {
       toast('Nothing to export');
@@ -37,6 +40,35 @@ export function App() {
     }
     downloadCsv(items);
     toast('CSV exported');
+  };
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const records = parseCsv(text);
+      if (records.length === 0) {
+        toast('No records found in CSV');
+        return;
+      }
+      
+      const inputs = records.map((record) => ({
+        name: record.name || 'Unnamed',
+        value: record.value || '',
+        type: (VALUE_TYPE_ORDER.includes(record.type as ValueType) ? record.type : 'text') as ValueType,
+        pinned: record.pinned === 'true',
+      }));
+
+      await addItems(inputs);
+      toast(`Imported ${inputs.length} keys`);
+    } catch (err) {
+      console.error(err);
+      toast('Failed to import CSV');
+    } finally {
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const usagePct = usage
@@ -102,21 +134,48 @@ export function App() {
           )}
         </Section>
 
-        <Section title="Export">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-medium">Export all keys to CSV</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Download a backup of every stored key and value.
-              </p>
+        <Section title="Import / Export">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium">Export all keys to CSV</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Download a backup of every stored key and value.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleExport}
+                className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+              >
+                Export CSV
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={handleExport}
-              className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
-            >
-              Export CSV
-            </button>
+            
+            <div className="flex items-center justify-between gap-4 border-t border-slate-200 pt-4 dark:border-slate-700">
+              <div>
+                <p className="text-sm font-medium">Import keys from CSV</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Restore keys from a previously exported CSV file.
+                </p>
+              </div>
+              <div>
+                <input
+                  type="file"
+                  accept=".csv"
+                  ref={fileInputRef}
+                  onChange={handleImport}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:border-slate-600 dark:hover:bg-slate-800"
+                >
+                  Import CSV
+                </button>
+              </div>
+            </div>
           </div>
         </Section>
 

@@ -37,3 +37,61 @@ export function downloadCsv(items: KeyItem[], filename = 'keystash-export.csv'):
   a.remove();
   URL.revokeObjectURL(url);
 }
+
+export function parseCsv(text: string): Record<string, string>[] {
+  const rows: string[][] = [];
+  let currentRow: string[] = [];
+  let currentCell = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const nextChar = text[i + 1];
+    
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        currentCell += '"';
+        i++; // skip escaped quote
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      currentRow.push(currentCell);
+      currentCell = '';
+    } else if (char === '\n' && !inQuotes) {
+      currentRow.push(currentCell);
+      rows.push(currentRow);
+      currentRow = [];
+      currentCell = '';
+    } else if (char === '\r' && !inQuotes) {
+      if (nextChar !== '\n') {
+        currentCell += char;
+      }
+    } else {
+      currentCell += char;
+    }
+  }
+  
+  if (currentCell !== '' || currentRow.length > 0) {
+    currentRow.push(currentCell);
+    rows.push(currentRow);
+  }
+  
+  if (rows.length === 0) return [];
+  
+  const headers = rows[0].map(h => h.trim());
+  const items = [];
+  
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    if (row.length === 1 && row[0].trim() === '') continue; // Skip empty lines
+    const item: Record<string, string> = {};
+    for (let j = 0; j < headers.length; j++) {
+      item[headers[j]] = row[j] ?? '';
+    }
+    items.push(item);
+  }
+  
+  return items;
+}
+
