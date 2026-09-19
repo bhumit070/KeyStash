@@ -4,6 +4,8 @@
 
 > Stash and instantly access your on-demand key/value data — GitHub profile, LinkedIn URL, wallet address, license keys, and anything else you keep re-typing.
 
+**Download KeyStash from the [Chrome Web Store](https://chromewebstore.google.com/detail/keystash/jkohijidcepclkdinalocegfghaejipa)**
+
 KeyStash is an open-source Chrome extension (Manifest V3) that stores small pieces of information as named key/value pairs and lets you copy or paste them anywhere in a couple of keystrokes. Your data is stored in `chrome.storage.sync`, so it follows you across every Chrome you're signed into.
 
 > [!WARNING]
@@ -16,6 +18,8 @@ KeyStash is an open-source Chrome extension (Manifest V3) that stores small piec
 </p>
 
 - **Popup manager** — a searchable list of all your stored keys with one-click copy.
+- **Type filtering** — easily filter your stash by data type using the dropdown.
+- **Clickable URLs** — URL keys automatically become clickable links so you can visit them directly from the popup.
 - **Typed values with validation** — pick a type (Text, Number, URL, Email, UUID, Date, Time, Date & Time, or Other) and KeyStash validates the value with [Zod](https://zod.dev) before saving. "Other" is free-form.
 - **Pinning** — pin the keys you use most so they float to the top.
 - **Context menu** — optionally expose pinned keys in the right-click menu on any page to copy them instantly.
@@ -25,7 +29,7 @@ KeyStash is an open-source Chrome extension (Manifest V3) that stores small piec
 </p>
 
 - **Spotlight search** — press <kbd>Ctrl/Cmd</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> to open a macOS-Spotlight-style overlay on the current page. Search, hit <kbd>Enter</kbd>, and the value is copied to your clipboard **and pasted into whatever input you were focused on**.
-- **CSV export** — download a backup of everything from the settings page.
+- **CSV import / export** — easily backup your entire stash to a CSV file and restore it on any other profile.
 - **Cross-device sync** — data lives in `chrome.storage.sync` and syncs to your signed-in Chrome browsers automatically.
 - **Dark mode** — the popup, options page, and spotlight all respect your system theme.
 
