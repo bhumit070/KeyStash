@@ -29,14 +29,14 @@ export function ItemRow({ item, onEdit }: ItemRowProps) {
 
   return (
     <div className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 transition hover:border-brand-300 hover:shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:hover:border-brand-700">
-      <button
-        type="button"
-        onClick={handleCopy}
-        className="flex min-w-0 flex-1 flex-col items-start text-left"
-        title="Click to copy"
-      >
-        <div className="flex w-full items-center gap-2">
-          <span className="truncate text-sm font-medium text-slate-800 dark:text-slate-100">
+      <div className="flex min-w-0 flex-1 flex-col items-start text-left">
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="flex w-full items-center gap-2 outline-none"
+          title="Click to copy"
+        >
+          <span className="truncate text-sm font-medium text-slate-800 transition hover:text-brand-600 dark:text-slate-100 dark:hover:text-brand-400">
             {item.name}
           </span>
           {item.pinned && (
@@ -45,11 +45,28 @@ export function ItemRow({ item, onEdit }: ItemRowProps) {
           <span className="ml-auto shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:bg-slate-700 dark:text-slate-300">
             {VALUE_TYPE_LABELS[item.type]}
           </span>
-        </div>
-        <span className="mt-0.5 w-full truncate text-xs text-slate-500 dark:text-slate-400">
-          {item.value}
-        </span>
-      </button>
+        </button>
+        {item.type === 'url' ? (
+          <a
+            href={item.value.startsWith('http') ? item.value : `https://${item.value}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-0.5 w-full truncate text-left text-xs text-brand-600 hover:underline dark:text-brand-400"
+            title="Open link"
+          >
+            {item.value}
+          </a>
+        ) : (
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="mt-0.5 w-full truncate text-left text-xs text-slate-500 transition hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+            title="Click to copy"
+          >
+            {item.value}
+          </button>
+        )}
+      </div>
 
       <div className="flex items-center gap-0.5">
         <button
